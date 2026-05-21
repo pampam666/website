@@ -18,8 +18,9 @@
         "name": "next"
       }
     ],
+    "types": ["jest", "@testing-library/jest-dom"],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
@@ -30,5 +31,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "everything-claude-code"]
 }

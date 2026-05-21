@@ -46,6 +46,7 @@ const config: Config = {
         "3xl": "48rem",
       },
     },
+  },
   plugins: [],
 }
 

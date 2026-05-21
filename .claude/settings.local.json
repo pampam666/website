@@ -45,7 +45,9 @@
       "Bash(xargs grep -l \"Form\\\\|Modal\\\\|Dialog\")",
       "Bash(xargs grep -l \"rfq\\\\|RFQ\")",
       "Bash(xargs grep -l \"api\\\\|route\")",
-      "Bash(export ECC_GATEGUARD=off)"
+      "Bash(export ECC_GATEGUARD=off)",
+      "mcp__plugin_ecc_context7__resolve-library-id",
+      "mcp__plugin_ecc_context7__query-docs"
     ]
   },
   "enabledPlugins": {

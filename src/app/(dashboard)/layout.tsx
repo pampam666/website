@@ -11,7 +11,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <span className="font-semibold text-foreground">Client User</span>
         </div>
       </nav>
-      </div>
 
       <main className="flex-1">
         {children}

@@ -49,7 +49,7 @@ export const sharedRfqFieldsSchema = z.object({
   product_category: z.string()
     .min(1, 'Product category is required')
     .max(255, 'Product category is too long'),
-  quantity: z.number({ invalid_type_error: 'Quantity is required' })
+  quantity: z.number({ error: 'Quantity is required' })
     .int('Quantity must be an integer')
     .min(1, 'Quantity must be at least 1')
     .max(100000, 'Quantity exceeds maximum'),
