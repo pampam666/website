@@ -1,0 +1,47 @@
+{
+  "agent": "antigravity-assistant",
+  "claude_code": {
+    "version": "2.1.138",
+    "platform": "win32-x64",
+    "path": "C:\\Users\\Windows 10\\.local\\bin\\claude.exe"
+  },
+  "active_mcp_servers": [
+    {
+      "name": "sequential-thinking",
+      "status": "connected",
+      "command": "npx -y @modelcontextprotocol/server-sequential-thinking@2025.12.18"
+    },
+    {
+      "name": "playwright",
+      "status": "connected",
+      "command": "npx -y @playwright/mcp@0.0.69 --extension"
+    },
+    {
+      "name": "context7",
+      "status": "connected",
+      "command": "npx -y @upstash/context7-mcp@2.1.4"
+    },
+    {
+      "name": "exa",
+      "status": "connected",
+      "url": "https://mcp.exa.ai/mcp"
+    },
+    {
+      "name": "github",
+      "status": "connected",
+      "command": "npx -y @modelcontextprotocol/server-github@2025.4.8"
+    },
+    {
+      "name": "memory",
+      "status": "connected",
+      "command": "npx -y @modelcontextprotocol/server-memory@2026.1.26"
+    }
+  ],
+  "workspace_tech_stack": {
+    "framework": "Next.js 15 (App Router)",
+    "orm": "Prisma ORM",
+    "database": "Neon Postgres (Serverless)",
+    "package_manager": "pnpm"
+  },
+  "last_updated": "2026-05-20"
+}

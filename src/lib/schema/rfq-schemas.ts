@@ -4,7 +4,7 @@ import { z } from 'zod'
 const indonesianPhoneRegex = /^\+62[1-9]\d{8,12}$/
 
 // Allowed procurement types for B2G
-const PROCUREMENT_TYPES = [
+export const PROCUREMENT_TYPES = [
   'Tender Langsung',
   'Tender Umum',
   'Penunjukan Langsung',
@@ -16,40 +16,71 @@ const SEGMENT_TYPES = ['B2G', 'B2B'] as const
 
 // Source tracking schema
 const sourceTrackingSchema = z.object({
-  source_domain: z.string().min(1).max(255),
-  source_page_path: z.string().min(1).max(512).optional(),
-  source_campaign_tag: z.string().min(1).max(255).optional(),
-  utm_source: z.string().min(1).max(255).optional(),
-  utm_medium: z.string().min(1).max(255).optional(),
-  utm_campaign: z.string().min(1).max(255).optional(),
+  source_domain: z.string().min(1).max(255).or(z.literal('')),
+  source_page_path: z.string().min(1).max(512).optional().or(z.literal('')),
+  source_campaign_tag: z.string().min(1).max(255).optional().or(z.literal('')),
+  utm_source: z.string().min(1).max(255).optional().or(z.literal('')),
+  utm_medium: z.string().min(1).max(255).optional().or(z.literal('')),
+  utm_campaign: z.string().min(1).max(255).optional().or(z.literal('')),
 })
 
 // Shared RFQ fields used by both B2G and B2B
 export const sharedRfqFieldsSchema = z.object({
   // Contact information
-  contact_name: z.string().min(1).max(255).trim(),
-  contact_email: z.string().email('Invalid email address'),
+  contact_name: z.string()
+    .min(1, 'Contact name is required')
+    .max(255, 'Contact name is too long')
+    .trim(),
+  contact_email: z.string()
+    .min(1, 'Contact email is required')
+    .email('Invalid email address'),
   contact_phone: z.string()
     .regex(indonesianPhoneRegex, 'Phone number must be in +62 format')
-    .optional(),
-  company_name: z.string().min(1).max(255).trim().optional(),
+    .optional()
+    .or(z.literal('')),
+  company_name: z.string()
+    .min(1, 'Company name is required')
+    .max(255, 'Company name is too long')
+    .trim()
+    .optional()
+    .or(z.literal('')),
 
   // RFQ details
-  product_category: z.string().min(1).max(255),
-  quantity: z.number().int().min(1).max(100000),
-  project_scope: z.string().min(1).max(5000).trim().optional(),
+  product_category: z.string()
+    .min(1, 'Product category is required')
+    .max(255, 'Product category is too long'),
+  quantity: z.number({ invalid_type_error: 'Quantity is required' })
+    .int('Quantity must be an integer')
+    .min(1, 'Quantity must be at least 1')
+    .max(100000, 'Quantity exceeds maximum'),
+  project_scope: z.string()
+    .min(1, 'Project scope is required')
+    .max(5000, 'Project scope is too long')
+    .trim()
+    .optional()
+    .or(z.literal('')),
   timeline: z.string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Timeline must be in YYYY-MM-DD format')
-    .optional(),
-  notes: z.string().max(2000).trim().optional(),
+    .optional()
+    .or(z.literal('')),
+  notes: z.string()
+    .max(2000, 'Notes are too long')
+    .trim()
+    .optional()
+    .or(z.literal('')),
 })
 
 // B2G-specific fields
 const b2GSpecificFieldsSchema = z.object({
   procurement_type: z.enum(PROCUREMENT_TYPES, {
-    errorMap: () => ({ message: 'Invalid procurement type' }),
+    error: 'Procurement type is required',
   }),
-  dipa_reference: z.string().min(1).max(255).trim().optional(),
+  dipa_reference: z.string()
+    .min(1, 'Dipa reference is required')
+    .max(255, 'Dipa reference is too long')
+    .trim()
+    .optional()
+    .or(z.literal('')),
 })
 
 // B2G RFQ schema

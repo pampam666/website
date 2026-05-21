@@ -48,6 +48,9 @@ Context Files:
 Task Description:
 <Detailed description of the task, including inputs, expected outputs, and behavior>
 
+Active MCP Directives:
+- <Directives for utilizing active MCPs: e.g. "Use the context7 MCP server to check Next.js 15 routing APIs" or "Use the playwright MCP server to run browser tests">
+
 Verification Steps:
 1. Run <build/test command> (e.g., `pnpm test` or `pnpm type-check`)
 2. Verify <expected result>
@@ -73,6 +76,8 @@ ECC Constraints:
     - [tests/resend.test.ts](file:///d:/CLAUDE-PROJECT/website/tests/resend.test.ts)
 
     Task: Update the Resend email utility to support CC and BCC addresses.
+    Active MCP Directives:
+    - Use the `context7` MCP server to check the latest Resend SDK v3 method signatures.
     Verification: Run `pnpm test tests/resend.test.ts`
     ```
 
@@ -87,6 +92,8 @@ ECC Constraints:
     - [src/middleware.ts](file:///d:/CLAUDE-PROJECT/website/src/middleware.ts)
 
     Task: Design a system to support multi-tenant subdomain routing for spokes.
+    Active MCP Directives:
+    - Use the `sequential-thinking` MCP server to lay out step-by-step routing rules before writing the plan.
     ```
 
 ### 3. Build & Compiler Error Fixes
@@ -99,5 +106,22 @@ ECC Constraints:
     - [src/app/api/auth/[...nextauth]/route.ts](file:///d:/CLAUDE-PROJECT/website/src/app/api/auth/%5B...nextauth%5D/route.ts)
 
     Task: Resolve the NextAuth v5 type declaration error introduced by the package upgrade.
+    Active MCP Directives:
+    - Use the `context7` MCP server to lookup Auth.js v5 Next.js Middleware configuration guides if type resolutions are missing.
     Verification: Run `pnpm type-check`
+    ```
+
+### 4. End-to-End Browser Testing
+*   **Target Command**: `/e2e-runner`
+*   **Verification**: Execute Playwright assertions.
+*   **Example**:
+    ```text
+    /e2e-runner
+    Context Files:
+    - [tests/e2e/dashboard.spec.ts](file:///d:/CLAUDE-PROJECT/website/tests/e2e/dashboard.spec.ts)
+
+    Task: Add E2E tests for the RFQ multi-step submission flow.
+    Active MCP Directives:
+    - Use the `playwright` MCP server to record, interact with, and assert UI elements during execution.
+    Verification: Run `pnpm exec playwright test tests/e2e/dashboard.spec.ts`
     ```

@@ -1,27 +1,24 @@
 import * as React from 'react'
 import { Controller, ControllerProps, FieldPath, FieldValues } from 'react-hook-form'
-import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
-interface TextFieldProps<TFieldValues extends FieldValues>
+interface SelectFieldProps<TFieldValues extends FieldValues>
   extends Omit<ControllerProps<TFieldValues>, 'render'> {
   label?: string
   placeholder?: string
-  type?: 'text' | 'email' | 'tel' | 'date' | 'number'
-  disabled?: boolean
+  options: readonly string[]
   error?: string
 }
 
-export function TextField<TFieldValues extends FieldValues = FieldValues>({
+export function SelectField<TFieldValues extends FieldValues = FieldValues>({
   name,
   control,
   label,
   placeholder,
-  type = 'text',
-  disabled = false,
+  options,
   error,
   rules,
-}: TextFieldProps<TFieldValues>) {
+}: SelectFieldProps<TFieldValues>) {
   const isRequired = !!(rules && ('required' in rules) && rules.required)
 
   return (
@@ -39,26 +36,34 @@ export function TextField<TFieldValues extends FieldValues = FieldValues>({
               {label}
             </label>
           )}
-          <Input
+          <select
             id={name as string}
-            type={type}
-            placeholder={placeholder}
-            disabled={disabled}
             required={isRequired}
-            className={cn(error && 'border-red-500 focus-visible:ring-red-500')}
+            className={cn(
+              'flex h-10 w-full items-center justify-between rounded-md border',
+              'border-slate-300 bg-white px-3 py-2 text-sm',
+              'focus:outline-none focus:ring-2 focus:ring-primary',
+              'disabled:opacity-50 disabled:cursor-not-allowed',
+              error && 'border-red-500 focus:ring-red-500'
+            )}
             {...field}
             value={field.value ?? ''}
             onChange={(e) => {
               const val = e.target.value
-              if (type === 'number') {
-                field.onChange(val === '' ? undefined : Number(val))
-              } else if (val === '') {
-                field.onChange(undefined)
-              } else {
-                field.onChange(val)
-              }
+              field.onChange(val === '' ? undefined : val)
             }}
-          />
+          >
+            {placeholder && (
+              <option value="" disabled>
+                {placeholder}
+              </option>
+            )}
+            {options.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
       )}

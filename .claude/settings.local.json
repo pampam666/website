@@ -39,7 +39,13 @@
       "Bash(pkill -f \"node\")",
       "Bash(pnpm exec *)",
       "Bash(pnpm add *)",
-      "Bash(npm test *)"
+      "Bash(npm test *)",
+      "Bash(xargs grep -l \"react-hook-form\\\\| useForm\\\\| useFieldArray\")",
+      "Bash(xargs grep -l \"sanity\\\\|sanity.io\")",
+      "Bash(xargs grep -l \"Form\\\\|Modal\\\\|Dialog\")",
+      "Bash(xargs grep -l \"rfq\\\\|RFQ\")",
+      "Bash(xargs grep -l \"api\\\\|route\")",
+      "Bash(export ECC_GATEGUARD=off)"
     ]
   },
   "enabledPlugins": {

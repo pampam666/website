@@ -20,6 +20,18 @@ Use this guide to coordinate tasks between the Antigravity IDE agent and the Cla
 2.  **Explicit Context Linking**: All generated prompts must explicitly anchor files using `file:///` URLs.
 3.  **Command Translation**: Translate the user's task description into a specific ECC command line (e.g. `/plan`, `/tdd-workflow`).
 4.  **No Action Duplication**: Antigravity must never attempt to compile, run tests, or modify source code during the preparation phase.
+5.  **MCP Integration**: Direct Claude Code to use its connected MCP servers (`playwright` for browser tests, `context7` for Next.js/Tailwind/Prisma docs, `sequential-thinking` for systemic logic, and `memory` for entity persistence).
+
+## Environment Information
+
+*   **Claude Code version**: `2.1.138 (Native win32-x64)`
+*   **Active MCP servers**:
+    *   `sequential-thinking` (Connected)
+    *   `playwright` (Connected)
+    *   `context7` (Connected)
+    *   `exa` (Connected)
+    *   `github` (Connected)
+    *   `memory` (Connected)
 
 ## The Cooperative Workflow
 
@@ -30,10 +42,10 @@ sequenceDiagram
     participant ClaudeCode as Claude Code (Terminal Agent)
 
     User->>Antigravity: Ask to prepare prompt for: "Task description"
-    Note over Antigravity: Analyzes workspace, tech stack, and target files
+    Note over Antigravity: Analyzes workspace, tech stack, active MCPs, and target files
     Antigravity->>User: Returns copy-pasteable prompt block
     User->>ClaudeCode: Pastes prompt in terminal
-    Note over ClaudeCode: Executes code edits, runs tests, and verifies
+    Note over ClaudeCode: Invokes active MCP servers (e.g. context7 or playwright) and executes code edits
     ClaudeCode->>User: Task completed and verified
 ```
 
@@ -46,7 +58,7 @@ For example:
 Antigravity scans the repository to identify:
 *   Relevant source code and test files.
 *   The package manager and build/test commands.
-*   Any dependencies or related rules.
+*   Active MCP server usage mapping.
 
 ### Step 3: Copy and Paste
 Antigravity outputs a formatted block. Copy the prompt block and paste it directly into your Claude Code terminal.
@@ -64,3 +76,4 @@ Provide a quick menu explaining the division of labor, followed by instructions 
 2.  **Verify target files**: Ensure paths exist.
 3.  **Draft prompt**: Output a markdown code block starting with the correct ECC command (e.g. `/tdd-workflow`).
 4.  **Confirm**: Remind the user to paste this block into the Claude Code terminal.
+5.  **MCP directives**: Include clear guidelines for MCP server invocation (e.g. context7 for Next.js 15 API lookup).
