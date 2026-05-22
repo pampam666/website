@@ -26,6 +26,13 @@ export async function POST(request: NextRequest) {
   try {
     const secret = process.env.SANITY_WEBHOOK_SECRET
 
+    if (!secret && process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        { error: 'Webhook secret is not configured' },
+        { status: 500 },
+      )
+    }
+
     if (secret) {
       const signature = request.headers.get('sanity-webhook-signature')
 
@@ -59,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     tags.forEach((tag) => {
-      revalidateTag(tag)
+      revalidateTag(tag, 'max')
     })
 
     return NextResponse.json({

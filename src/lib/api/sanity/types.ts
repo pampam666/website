@@ -104,9 +104,7 @@ export interface Certification {
   _id: string
   _type: 'certification'
   title: string
-  slug: {
-    current: string
-  }
+  slug: string
   certificationBody: string
   certType: CertType
   issueDate: string
@@ -215,7 +213,8 @@ export interface CustomBlock {
 /**
  * Product with spoke and certifications expanded.
  */
-export interface ProductWithRelations extends Omit<Product, 'spoke' | 'relatedCertifications'> {
+export interface ProductWithRelations extends Omit<Product, 'spoke' | 'relatedCertifications' | 'slug'> {
+  slug: string
   spoke: {
     _id: string
     subdomain: string
@@ -224,16 +223,15 @@ export interface ProductWithRelations extends Omit<Product, 'spoke' | 'relatedCe
   relatedCertifications: Array<{
     _id: string
     title: string
-    slug: {
-      current: string
-    }
+    slug: string
   }>
 }
 
 /**
  * Portfolio entry with spoke and products expanded.
  */
-export interface PortfolioWithRelations extends Omit<PortfolioEntry, 'relatedSpoke' | 'relatedProducts'> {
+export interface PortfolioWithRelations extends Omit<PortfolioEntry, 'relatedSpoke' | 'relatedProducts' | 'slug'> {
+  slug: string
   relatedSpoke?: {
     _id: string
     subdomain: string
@@ -242,9 +240,7 @@ export interface PortfolioWithRelations extends Omit<PortfolioEntry, 'relatedSpo
   relatedProducts: Array<{
     _id: string
     title: string
-    slug: {
-      current: string
-    }
+    slug: string
   }>
 }
 
@@ -255,9 +251,7 @@ export interface SpokeConfigWithProducts extends Omit<SpokeConfig, 'featuredProd
   featuredProducts: Array<{
     _id: string
     title: string
-    slug: {
-      current: string
-    }
+    slug: string
     shortDescription: string
     images: ImageAsset[]
   }>
@@ -266,7 +260,8 @@ export interface SpokeConfigWithProducts extends Omit<SpokeConfig, 'featuredProd
 /**
  * Page with optional spoke reference expanded.
  */
-export interface PageWithSpoke extends Omit<Page, 'targetSpoke'> {
+export interface PageWithSpoke extends Omit<Page, 'targetSpoke' | 'slug'> {
+  slug: string
   targetSpoke?: {
     _id: string
     subdomain: string

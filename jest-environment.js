@@ -1,24 +1,32 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { TestEnvironment } = require('jest-environment-jsdom')
 
 class CustomJSDOMEnvironment extends TestEnvironment {
-  constructor(config) {
-    super(config, {})
+  constructor(config, context) {
+    super(config, context)
+    
+    // Copy Node native web APIs to JSDOM environment
+    this.global.Request = global.Request
+    this.global.Response = global.Response
+    this.global.Headers = global.Headers
+    this.global.fetch = global.fetch
+
     // Make location configurable after construction
     try {
-      Object.defineProperty(this.window, 'location', {
-        get: () => this.window._location,
+      Object.defineProperty(this.global, 'location', {
+        get: () => this.global._location,
         set: (value) => {
-          this.window._location = value
+          this.global._location = value
         },
         configurable: true,
       })
       // Store the current location
-      this.window._location = this.window.location
+      this.global._location = this.global.location
     } catch (e) {
       // Fallback if location can't be redefined
-      console.warn('Could not redefine window.location:', e)
     }
   }
 }
 
 module.exports = CustomJSDOMEnvironment
+

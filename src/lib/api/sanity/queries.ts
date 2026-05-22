@@ -1,14 +1,11 @@
 import { groq, defineQuery } from 'next-sanity'
 import { client, CACHE_TAGS, type FetchOptions } from './client'
 import type {
-  Product,
   ProductWithRelations,
   Certification,
-  PortfolioEntry,
   PortfolioWithRelations,
   SpokeConfig,
   SpokeConfigWithProducts,
-  Page,
   PageWithSpoke,
 } from './types'
 
@@ -47,7 +44,6 @@ const productFields = groq`
  */
 export async function getProductsBySpoke(
   spokeSubdomain: string,
-  options: QueryOptions = {},
 ): Promise<ProductWithRelations[] | null> {
   const query = defineQuery(groq`
     *[_type == "product" && spoke.subdomain == $subdomain]{
@@ -78,7 +74,6 @@ export async function getProductsBySpoke(
  */
 export async function getProductBySlug(
   slug: string,
-  options: QueryOptions = {},
 ): Promise<ProductWithRelations | null> {
   const query = defineQuery(groq`
     *[_type == "product" && slug.current == $slug][0]{
@@ -125,9 +120,7 @@ const certificationFields = groq`
  * @param options - Query options
  * @returns Array of certifications, or null
  */
-export async function getCertifications(
-  options: QueryOptions = {},
-): Promise<Certification[] | null> {
+export async function getCertifications(): Promise<Certification[] | null> {
   const query = defineQuery(groq`
     *[_type == "certification" && isIndexable == true]{
       ${certificationFields}
@@ -157,7 +150,6 @@ export async function getCertifications(
  */
 export async function getCertificationBySlug(
   slug: string,
-  options: QueryOptions = {},
 ): Promise<Certification | null> {
   const query = defineQuery(groq`
     *[_type == "certification" && slug.current == $slug][0]{
@@ -209,7 +201,6 @@ const portfolioFields = groq`
  */
 export async function getPortfolioEntries(
   spokeSubdomain?: string,
-  options: QueryOptions = {},
 ): Promise<PortfolioWithRelations[] | null> {
   const baseQuery = spokeSubdomain
     ? `*[_type == "portfolioEntry" && relatedSpoke.subdomain == $subdomain]`
@@ -253,7 +244,6 @@ export async function getPortfolioEntries(
  */
 export async function getPortfolioBySlug(
   slug: string,
-  options: QueryOptions = {},
 ): Promise<PortfolioWithRelations | null> {
   const query = defineQuery(groq`
     *[_type == "portfolioEntry" && slug.current == $slug][0]{
@@ -300,7 +290,6 @@ const spokeConfigFields = groq`
  */
 export async function getSpokeConfig(
   subdomain: string,
-  options: QueryOptions = {},
 ): Promise<SpokeConfigWithProducts | null> {
   const query = defineQuery(groq`
     *[_type == "spokeConfig" && subdomain == $subdomain][0]{
@@ -328,9 +317,7 @@ export async function getSpokeConfig(
  * @param options - Query options
  * @returns Array of all spoke configs, or null
  */
-export async function getAllSpokeConfigs(
-  options: QueryOptions = {},
-): Promise<SpokeConfig[] | null> {
+export async function getAllSpokeConfigs(): Promise<SpokeConfig[] | null> {
   const query = defineQuery(groq`
     *[_type == "spokeConfig"]{
       _id,
@@ -381,7 +368,6 @@ const pageFields = groq`
 export async function getPageBySlug(
   slug: string,
   spokeSubdomain?: string,
-  options: QueryOptions = {},
 ): Promise<PageWithSpoke | null> {
   const baseQuery = spokeSubdomain
     ? `*[_type == "page" && slug.current == $slug && targetSpoke.subdomain == $subdomain]`

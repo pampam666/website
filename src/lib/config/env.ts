@@ -78,3 +78,56 @@ export function getSanityEnv(): SanityEnv {
   cachedEnv = validateSanityEnv()
   return cachedEnv
 }
+
+/**
+ * Middleware environment variable validation schema.
+ */
+export const middlewareEnvSchema = z.object({
+  NEXT_PUBLIC_ROOT_DOMAIN: z.string().min(1, 'Root domain is required'),
+  NEXT_PUBLIC_SITE_URL: z.string().url('Site URL must be a valid URL'),
+})
+
+export type MiddlewareEnv = z.infer<typeof middlewareEnvSchema>
+
+/**
+ * Validate all middleware environment variables with dynamic environment defaults.
+ *
+ * @returns Validated environment configuration
+ * @throws {Error} If validation fails
+ */
+export function validateMiddlewareEnv(): MiddlewareEnv {
+  const isProd = process.env.NODE_ENV === 'production'
+  const defaultDomain = isProd ? 'sentradaya.com' : 'lvh.me'
+  const defaultUrl = isProd ? 'https://sentradaya.com' : 'http://lvh.me:3000'
+
+  const raw = {
+    NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN || defaultDomain,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || defaultUrl,
+  }
+
+  const result = middlewareEnvSchema.safeParse(raw)
+
+  if (!result.success) {
+    const errors = result.error.issues
+      .map(issue => `${issue.path.join('.')}: ${issue.message}`)
+      .join(', ')
+    throw new Error(`Middleware environment validation failed: ${errors}`)
+  }
+
+  return result.data
+}
+
+/**
+ * Get validated middleware environment configuration.
+ * Caches the result after first call.
+ */
+let cachedMiddlewareEnv: MiddlewareEnv | null = null
+
+export function getMiddlewareEnv(): MiddlewareEnv {
+  if (cachedMiddlewareEnv) {
+    return cachedMiddlewareEnv
+  }
+
+  cachedMiddlewareEnv = validateMiddlewareEnv()
+  return cachedMiddlewareEnv
+}

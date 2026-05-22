@@ -47,7 +47,12 @@
       "Bash(xargs grep -l \"api\\\\|route\")",
       "Bash(export ECC_GATEGUARD=off)",
       "mcp__plugin_ecc_context7__resolve-library-id",
-      "mcp__plugin_ecc_context7__query-docs"
+      "mcp__plugin_ecc_context7__query-docs",
+      "Bash(ECC_GATEGUARD=off npm test -- --testPathPattern=\"sanity|revalidate\")",
+      "Bash(ECC_GATEGUARD=off npm test -- --testPathPatterns=\"sanity|revalidate\")",
+      "Bash(ECC_GATEGUARD=off sed *)",
+      "Bash(ECC_GATEGUARD=off npm test *)",
+      "Bash(ECC_GATEGUARD=off rm -f \"src/lib/api/sanity/__tests__queries.test.ts\")"
     ]
   },
   "enabledPlugins": {
