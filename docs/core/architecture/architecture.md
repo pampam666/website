@@ -4,8 +4,8 @@
 
 ### Core Tech Stack Summary
 
-- **Application Runtime:** Next.js 15 (App Router, Route Handlers, Server Components, enhanced caching)
-- **Repository Strategy:** Single Next.js 15 app with pnpm package manager
+- **Application Runtime:** Next.js 16 (App Router, Route Handlers, Server Components, enhanced caching)
+- **Repository Strategy:** Single Next.js 16 app with pnpm package manager
 - **Content Layer:** Sanity.io (headless CMS, schema-driven content federation)
 - **UI System:** Tailwind CSS + Radix UI with shadcn/ui patterns (shared tokenized design system)
 - **Transactional Data Layer:** Neon Postgres via Prisma ORM (type-safe migrations)
@@ -41,7 +41,7 @@ flowchart TD
         REDIR["Redirect Resolver\n(redirect_map-driven 301)"]
         MW["Middleware\nSubdomain Router"]
     end
-    subgraph APP["Single Next.js 15 App"]
+    subgraph APP["Single Next.js 16 App"]
         WEB["Unified Web App\nApp Router + Middleware"]
         API["Route Handlers\n/api/rfq, /api/tracking, /api/admin/*"]
         AUTH["Auth.js v5\nSession + RBAC"]
@@ -100,7 +100,7 @@ flowchart TD
 
 ### Frontend
 
-- **Runtime + Routing:** Next.js 15 App Router with middleware-based subdomain routing; route segmentation by host/subdomain and route groups.
+- **Runtime + Routing:** Next.js 16 App Router with middleware-based subdomain routing; route segmentation by host/subdomain and route groups.
 - **Domain Surfaces:**
   - Hub: corporate trust center (`sentradaya.com`)
   - Product spokes: product content + RFQ entry (`pju`, `solarcell`, `alatpetir`, `baterai`)
@@ -119,7 +119,7 @@ flowchart TD
 
 ### Backend
 
-- **Edge-facing app backend:** Next.js 15 Route Handlers under `/api/*`.
+- **Edge-facing app backend:** Next.js 16 Route Handlers under `/api/*`.
 - **Core service domains:**
   1. RFQ ingestion (validation, persistence, notification, fallback orchestration)
   2. Authentication/session issuance (Auth.js v5)
@@ -136,7 +136,7 @@ flowchart TD
 
 ### Infrastructure/DevOps
 
-- **Hosting:** Cloudflare Pages for single Next.js 15 app with middleware-based subdomain routing.
+- **Hosting:** Cloudflare Pages for single Next.js 16 app with middleware-based subdomain routing.
 - **Routing model:** Hostname-based middleware routing into single deployment target.
 - **Redirect engine:**
   - Data source: Neon Postgres `redirect_map`
@@ -434,7 +434,7 @@ sequenceDiagram
     actor User
     participant UI as Spoke RFQ Form (Next.js)
     participant API as POST /api/rfq
-    participant DB as PlanetScale (leads)
+    participant DB as Neon Postgres (leads)
     participant Resend as Resend API
     participant TG as Telegram Bot API
     participant WA as WhatsApp wa.me
@@ -474,7 +474,7 @@ sequenceDiagram
     actor Client as B2B/B2G Client User
     participant Dash as dashboard.sentradaya.com
     participant Auth as NextAuth.js
-    participant DB as PlanetScale (users, leads)
+    participant DB as Neon Postgres (users, leads)
     participant TrackAPI as GET /api/dashboard/tracking
     participant GA as GA4
     Client->>Dash: Open login page
@@ -537,9 +537,9 @@ sequenceDiagram
 
 ## 7. AI Implementation Handoff (Build Order)
 
-1. **Initialize Monorepo Foundations**
-   1.1 Configure Turborepo workspaces and shared packages (`ui`, `config`, `types`).
-   1.2 Scaffold Next.js 14 app structure with App Router and host-aware routing utilities.
+1. **Initialize Project Foundations**
+   1.1 Configure shared packages (`ui`, `config`, `types`) within single Next.js 16 app.
+   1.2 Scaffold Next.js 16 app structure with App Router and host-aware routing utilities.
    1.3 Implement shared Tailwind + Radix baseline tokens at root.
 
 2. **Implement Domain Routing + Edge Topology**
@@ -553,7 +553,7 @@ sequenceDiagram
    3.3 Validate spoke rendering is data-driven with zero code forks.
 
 4. **Provision Transactional Data Layer**
-   4.1 Create PlanetScale schema: `leads`, `users`, `redirect_map` exactly per PRD v3 fields.
+   4.1 Create Neon Postgres schema: `leads`, `users`, `redirect_map` exactly per PRD v3 fields.
    4.2 Add indexes for lead lifecycle filters, source attribution, and linked client lookup.
    4.3 Add migration validation for enum coverage and nullable constraints.
 

@@ -7,18 +7,18 @@
 
 ## Overview
 
-The DBSN platform uses a hub-and-spoke architecture with multiple subdomains served from a single Next.js 15 codebase. This document explains how to test subdomain routing locally.
+The DBSN platform uses a hub-and-spoke architecture with multiple subdomains served from a single Next.js 16 codebase. This document explains how to test subdomain routing locally.
 
 ### Subdomain Architecture
 
-| Domain | Purpose | Route Group |
-|--------|---------|-------------|
+| Domain | Purpose | Route |
+|--------|---------|-------|
 | `sentradaya.com` | Hub — Corporate trust center | `(hub)` |
-| `pju.sentradaya.com` | PJU / Street Lighting spoke | `(spokes)` |
-| `solarcell.sentradaya.com` | Solar Cell spoke | `(spokes)` |
-| `alatpetir.sentradaya.com` | Lightning Protection spoke | `(spokes)` |
-| `baterai.sentradaya.com` | Battery spoke | `(spokes)` |
-| `dashboard.sentradaya.com` | Client tracking portal | `(dashboard)` |
+| `pju.sentradaya.com` | PJU / Street Lighting spoke | `(spokes)/pju` |
+| `solarcell.sentradaya.com` | Solar Cell spoke | `(spokes)/solarcell` |
+| `alatpetir.sentradaya.com` | Lightning Protection spoke | `(spokes)/alatpetir` |
+| `baterai.sentradaya.com` | Battery spoke | `(spokes)/baterai` |
+| `dashboard.sentradaya.com` | Client tracking portal | `dashboard/` (flat route) |
 
 ---
 
@@ -46,52 +46,69 @@ Replace `:3000` with your dev server port if different:
 
 ### Middleware Configuration
 
-Create `middleware.ts` at the project root:
+The actual middleware at `src/middleware.ts` uses domain-resolution helpers from `src/lib/middleware/config.ts`. You do **not** need to rewrite it — it already supports `lvh.me` local development out of the box.
+
+**Key helpers in `src/lib/middleware/config.ts`:**
+
+| Function | Purpose |
+|----------|---------|
+| `cleanHostname(host)` | Strips port number from `Host` header |
+| `isHubDomain(hostname)` | Returns `true` for root/www domain and `localhost` |
+| `isDashboardDomain(hostname)` | Returns `true` when subdomain is `dashboard` |
+| `isSpokeDomain(hostname)` | Returns the spoke subdomain string, or `null` |
+| `SPOKE_SUBDOMAINS` | `['pju', 'solarcell', 'alatpetir', 'baterai']` |
+
+**Routing outcome:**
+
+```
+Request hostname       → Routed to
+─────────────────────────────────────────────────────
+lvh.me:3000            → (hub) route group  (NextResponse.next)
+dashboard.lvh.me:3000  → rewrite /dashboard/*
+pju.lvh.me:3000        → rewrite /pju/*  →  (spokes)/pju
+solarcell.lvh.me:3000  → rewrite /solarcell/*
+unknown hostname       → rewrite /404
+```
+
+**Actual matcher configuration** (in `src/middleware.ts`):
 
 ```typescript
-import { NextRequest, NextResponse } from 'next/server';
-
-export function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host')?.split(':')[0] || '';
-
-  // Hub routing
-  if (hostname === 'lvh.me' || hostname === 'sentradaya.com') {
-    return NextResponse.rewrite(new URL('/', request.url));
-  }
-
-  // Spoke routing
-  if (hostname.startsWith('pju.')) {
-    return NextResponse.rewrite(new URL('/(spokes)/pju', request.url));
-  }
-
-  if (hostname.startsWith('solarcell.')) {
-    return NextResponse.rewrite(new URL('/(spokes)/solarcell', request.url));
-  }
-
-  if (hostname.startsWith('alatpetir.')) {
-    return NextResponse.rewrite(new URL('/(spokes)/alatpetir', request.url));
-  }
-
-  if (hostname.startsWith('baterai.')) {
-    return NextResponse.rewrite(new URL('/(spokes)/baterai', request.url));
-  }
-
-  // Dashboard routing
-  if (hostname.startsWith('dashboard.')) {
-    return NextResponse.rewrite(new URL('/(dashboard)', request.url));
-  }
-
-  return NextResponse.next();
-}
-
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-};
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
+  ],
+}
 ```
+
+**Development hostname map** (`src/lib/middleware/dev-hosts.ts`):
+
+```typescript
+export const DEV_HOSTNAMES = {
+  'lvh.me': '(hub)',
+  'www.lvh.me': '(hub)',
+  'dashboard.lvh.me': '/dashboard',
+  'pju.lvh.me': '(spokes)/pju',
+  'solarcell.lvh.me': '(spokes)/solarcell',
+  'alatpetir.lvh.me': '(spokes)/alatpetir',
+  'baterai.lvh.me': '(spokes)/baterai',
+} as const
+```
+
+### Vercel Preview Domain Support
+
+The middleware also supports Vercel preview deployments. Hostnames ending in `.vercel.app` are treated as root domains, enabling full hub-and-spoke testing on preview URLs:
+
+| Preview URL | Routed as |
+|-------------|-----------|
+| `my-app.vercel.app` | Hub |
+| `pju.my-app.vercel.app` | PJU spoke |
+| `dashboard.my-app.vercel.app` | Dashboard |
+
+No additional configuration is needed — the middleware detects `.vercel.app` domains automatically.
 
 ### Usage
 
-1. Start dev server: `pnpm dev`
+1. Start dev server: `npm run dev`
 2. Navigate to: `http://pju.lvh.me:3000`
 3. Verify you see the PJU spoke page
 
@@ -146,7 +163,7 @@ export const config = {
 
 ### Usage
 
-1. Start dev server: `pnpm dev`
+1. Start dev server: `npm run dev`
 2. Navigate to: `http://pju.sentradaya.com:3000`
 3. Verify you see the PJU spoke page
 
@@ -159,32 +176,34 @@ export const config = {
 Create `.env.local` in project root:
 
 ```bash
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/dbsn"
+# Domain
+NEXT_PUBLIC_ROOT_DOMAIN="lvh.me"          # Use sentradaya.com in production
+NEXT_PUBLIC_SITE_URL="http://lvh.me:3000" # Use https://sentradaya.com in production
 
 # Sanity CMS
 SANITY_PROJECT_ID="your-project-id"
-SANITY_API_READ_TOKEN="your-read-token"
+SANITY_DATASET="production"
+SANITY_API_VERSION="v2025-05-21"
+SANITY_API_READ_TOKEN="sk-your-read-token"
+SANITY_API_WRITE_TOKEN="sk-your-write-token"   # Optional
+SANITY_WEBHOOK_SECRET="your-webhook-secret"     # Optional in dev
 
-# Email (Resend)
+# Email (Resend) — Optional in dev
 RESEND_API_KEY="re_your-api-key-here"
 
-# Telegram Bot
+# Telegram Bot — Optional in dev
 TELEGRAM_BOT_TOKEN="your-bot-token"
 TELEGRAM_CHAT_ID="-1001234567890"
 
-# Analytics
+# Analytics — Optional in dev
 GA_TRACKING_ID="G-XXXXXXXXXX"
-
-# Environment
-NODE_ENV=development
 ```
 
 ### Verification
 
 ```bash
 # Verify environment variables are loaded
-pnpm exec node -e "console.log(require('dotenv').config()); console.log(process.env.DATABASE_URL)"
+node -e "require('dotenv').config({ path: '.env.local' }); console.log(process.env.NEXT_PUBLIC_ROOT_DOMAIN)"
 ```
 
 ---
@@ -196,16 +215,25 @@ pnpm exec node -e "console.log(require('dotenv').config()); console.log(process.
 Default port is `3000`. To use a different port:
 
 ```bash
-# Environment variable
-PORT=4000 pnpm dev
-
-# Or in package.json scripts
-"dev": "next dev -p 4000"
+# Pass port flag directly
+npm run dev -- -p 4000
 ```
+
+### Available Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Start development server (port 3000) |
+| `npm run build` | Production build |
+| `npm start` | Serve production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run Jest unit/integration tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
 
 ### Hot Module Replacement
 
-Next.js 15 with Turbopack provides fast HMR. No additional configuration needed.
+Next.js 16 provides fast HMR. No additional configuration needed.
 
 ---
 
@@ -275,7 +303,10 @@ Before committing code, verify:
 - [Project Roadmap](../project-roadmap.md) — Phase 2.7 (Subdomain Middleware) status
 - [Mocking Specs](../testing/mocking-specs.md) — External service mocking patterns
 - [TDD v1](../architecture/tdd-v1.md) — Middleware routing architecture
+- [`src/middleware.ts`](../../../src/middleware.ts) — Active edge middleware implementation
+- [`src/lib/middleware/config.ts`](../../../src/lib/middleware/config.ts) — Domain resolution helpers
+- [`src/lib/middleware/dev-hosts.ts`](../../../src/lib/middleware/dev-hosts.ts) — Development hostname map
 
 ---
 
-*Last modified: 2026-05-20*
+*Last modified: 2026-05-26*

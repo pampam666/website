@@ -33,7 +33,7 @@ DBSN's digital presence is fragmented across three legacy domains, causing trust
 
 This Technical Design Document provides a production-ready blueprint for implementing DBSN Centralized Digital Ecosystem using **Test-Driven Development** methodology. It enforces:
 
-1. **Hub-and-Spoke Architecture:** Single Next.js 15 codebase with middleware-based subdomain routing
+1. **Hub-and-Spoke Architecture:** Single Next.js 16 codebase with middleware-based subdomain routing
 2. **Resilient RFQ Pipeline:** Exponential backoff queue with zero-tolerance for lead loss
 3. **UU PDP Compliance:** Data retention partitions, encryption standards, manual right-to-erasure workflows
 4. **Performance Guarantees:** PSI 90+ mobile score through caching and asset optimization
@@ -105,7 +105,7 @@ flowchart TD
     end
     
     subgraph App["Application Layer"]
-        Router["📦 Next.js 15 App Router"]
+        Router["📦 Next.js 16 App Router"]
         Auth["🔐 Auth.js v5\nSession + RBAC"]
         API["🔌 API Routes\n/api/rfq, /api/auth, /api/tracking, /api/admin"]
         UI["🎨 Shared UI\nshadcn/ui + Tailwind"]
@@ -167,32 +167,49 @@ flowchart TD
 
 ### Middleware-Based Subdomain Routing
 
-The core architectural pattern is **middleware-based subdomain routing** that enables a single Next.js 15 codebase to serve multiple domains.
+The core architectural pattern is **middleware-based subdomain routing** that enables a single Next.js 16 codebase to serve multiple domains.
 
 #### Routing Logic
 
 ```typescript
-// middleware.ts
-export function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host')?.split(':')[0] || '';
-  
+// middleware.ts — uses domain helpers from src/lib/middleware/config.ts
+import { NextRequest, NextResponse } from 'next/server'
+import {
+  cleanHostname,
+  isHubDomain,
+  isDashboardDomain,
+  isSpokeDomain,
+} from './lib/middleware/config'
+
+export default function middleware(request: NextRequest) {
+  const { pathname, search } = request.nextUrl
+  const cleanHost = cleanHostname(request.headers.get('host'))
+  const spoke = isSpokeDomain(cleanHost)
+
   // Hub routing
-  if (hostname === 'sentradaya.com') {
-    return NextResponse.rewrite(new URL('/', request.url));
+  if (isHubDomain(cleanHost)) {
+    const response = NextResponse.next()
+    response.headers.set('x-middleware-subdomain', 'hub')
+    return response
   }
-  
+
+  // Dashboard routing → rewrite to flat /dashboard/* route
+  if (isDashboardDomain(cleanHost)) {
+    const url = new URL(`/dashboard${pathname}${search}`, request.url)
+    const response = NextResponse.rewrite(url)
+    response.headers.set('x-middleware-subdomain', 'dashboard')
+    return response
+  }
+
   // Spoke routing
-  if (hostname === 'pju.sentradaya.com') {
-    return NextResponse.rewrite(new URL('/(spokes)/pju', request.url));
+  if (spoke) {
+    const url = new URL(`/${spoke}${pathname}${search}`, request.url)
+    const response = NextResponse.rewrite(url)
+    response.headers.set('x-middleware-subdomain', spoke)
+    return response
   }
-  // ... other spokes
-  
-  // Dashboard routing
-  if (hostname === 'dashboard.sentradaya.com') {
-    return NextResponse.rewrite(new URL('/(dashboard)', request.url));
-  }
-  
-  return NextResponse.next();
+
+  return NextResponse.rewrite(new URL('/404', request.url))
 }
 ```
 
@@ -206,7 +223,7 @@ src/app/
 │   ├── solarcell/
 │   ├── alatpetir/
 │   └── baterai/
-├── (dashboard)/         # Client tracking portal (dashboard.sentradaya.com)
+├── dashboard/           # Client tracking portal (dashboard.sentradaya.com) — flat route, not route group
 └── api/                  # API routes (shared across all domains)
 ```
 
@@ -1046,7 +1063,7 @@ describe('Dashboard Access Flow', () => {
 ### Phase 1: Foundation (Week 1-2)
 
 1. **Project Bootstrap**
-   - Initialize Next.js 15 with TypeScript
+   - Initialize Next.js 16 with TypeScript
    - Configure pnpm workspaces
    - Set up shared Tailwind + Radix UI (shadcn/ui)
    - Configure Prisma ORM with Neon Postgres
