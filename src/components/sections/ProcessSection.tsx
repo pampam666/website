@@ -34,8 +34,8 @@ export default function ProcessSection() {
             <div className="absolute top-7 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-emerald-400 via-emerald-300 to-amber-400 dark:from-emerald-600 dark:via-emerald-500 dark:to-amber-500" />
             <div className="absolute top-[30px] left-[10%] right-[10%] h-1 blur-sm bg-gradient-to-r from-emerald-400/30 via-emerald-300/30 to-amber-400/30" />
             {steps.map((step, index) => (
-              <ScrollReveal key={step.number} delay={index * 0.15}>
-                <div className="flex flex-col items-center w-[20%] group">
+              <ScrollReveal key={step.number} delay={index * 0.15} className="w-[20%]">
+                <div className="flex flex-col items-center w-full group">
                   <div className="relative z-10 w-14 h-14 rounded-full bg-white dark:bg-gray-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 mb-2 border-2 border-emerald-200 dark:border-emerald-700 group-hover:border-emerald-400">
                     <step.icon className="w-6 h-6" />
                   </div>
