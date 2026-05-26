@@ -191,7 +191,7 @@ flowchart TB
 ├── /rfq                                       → Formulir RFQ (pre-fill)
 ```
 
-**Routing Single-App:** Struktur URL di atas di-handle oleh middleware Next.js 15 untuk menentukan subdomain yang diminta dan merender komponen yang sesuai secara data-driven dari Sanity CMS.
+**Routing Single-App:** Struktur URL di atas di-handle oleh middleware Next.js 16 untuk menentukan subdomain yang diminta dan merender komponen yang sesuai secara data-driven dari Sanity CMS.
 
 ### 4.3 Komponen PDP (Product Detail Page)
 
@@ -213,7 +213,7 @@ PDP adalah halaman konversi kunci. Setiap PDP harus memiliki:
 
 ## 5. Sitemap Dashboard (dashboard.sentradaya.com)
 
-Dashboard adalah **surface operasional tertutup** untuk klien B2B/B2G yang telah terkualifikasi. Phase 1 hanya mencakup pelacakan status. Pada Single-App Next.js 15, routing ke `dashboard.sentradaya.com` di-handle oleh middleware yang mengidentifikasi hostname `dashboard` dan merender route group `(auth)`.
+Dashboard adalah **surface operasional tertutup** untuk klien B2B/B2G yang telah terkualifikasi. Phase 1 hanya mencakup pelacakan status. Pada Single-App Next.js 16, routing ke `dashboard.sentradaya.com` di-handle oleh middleware yang mengidentifikasi hostname `dashboard` dan merender route group `(auth)`.
 
 ### 5.1 Struktur URL Dashboard
 
@@ -294,11 +294,11 @@ dashboard.sentradaya.com/
 
 > **Phase 2 (ditunda):** Unduh dokumen (faktur, kontrak, surat jalan) dari dalam dashboard. Status di-retrieve dari tabel Neon Postgres melalui Prisma ORM.
 
-**Catatan Arsitektur Single-App:** Single Next.js 15 app dengan middleware-based subdomain routing, Prisma ORM dengan Neon Postgres, dan Auth.js v5. Lihat [architecture.md](../architecture/architecture.md) untuk detail lengkap.
+**Catatan Arsitektur Single-App:** Single Next.js 16 app dengan middleware-based subdomain routing, Prisma ORM dengan Neon Postgres, dan Auth.js v5. Lihat [architecture.md](../architecture/architecture.md) untuk detail lengkap.
 
 ---
 
 > **Dokumen sebelumnya:** [Bagian 1 — Strategi & Navigasi](./ia-strategy-navigation.md)  
 > **Dokumen selanjutnya:** [Bagian 3 — Alur Pengguna Inti](./ia-user-flows.md)
 
-**Catatan Arsitektur Single-App:** Single Next.js 15 app dengan middleware-based subdomain routing, Prisma ORM dengan Neon Postgres, dan Auth.js v5. Lihat [architecture.md](../architecture/architecture.md) untuk detail lengkap.
+**Catatan Arsitektur Single-App:** Single Next.js 16 app dengan middleware-based subdomain routing, Prisma ORM dengan Neon Postgres, dan Auth.js v5. Lihat [architecture.md](../architecture/architecture.md) untuk detail lengkap.

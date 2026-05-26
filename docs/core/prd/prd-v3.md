@@ -88,13 +88,13 @@ This segment includes procurement managers at private enterprises, EPC (Engineer
 
 ### 1.3 High-Level Architecture
 
-The locked architectural model is a **Hub-and-Spoke Sub-domain Architecture** delivered from a **single Next.js 15 application** with middleware-based subdomain routing. The hub operates on the root domain and functions as the corporate trust center: it hosts the company profile, certifications, cross-sector portfolio, and routing CTAs that direct users to the appropriate product spoke. Each product spoke is a dedicated sub-domain (e.g., `pju.sentradaya.com`, `solarcell.sentradaya.com`, `alatpetir.sentradaya.com`, `baterai.sentradaya.com`) hosting product-cluster content, product pages, and the segmented RFQ entry point.
+The locked architectural model is a **Hub-and-Spoke Sub-domain Architecture** delivered from a **single Next.js 16 application** with middleware-based subdomain routing. The hub operates on the root domain and functions as the corporate trust center: it hosts the company profile, certifications, cross-sector portfolio, and routing CTAs that direct users to the appropriate product spoke. Each product spoke is a dedicated sub-domain (e.g., `pju.sentradaya.com`, `solarcell.sentradaya.com`, `alatpetir.sentradaya.com`, `baterai.sentradaya.com`) hosting product-cluster content, product pages, and the segmented RFQ entry point.
 
 In Version 3.1, the architecture is extended with a dedicated secure access spoke: **`dashboard.sentradaya.com`**. This sub-domain functions as the client login and tracking services portal (Layanan Pelacakan) for B2B and B2G clients who have successfully progressed through RFQ and qualification workflows. The dashboard is not a public marketing surface; it is an authenticated operational surface linked to client-specific tracking/project identifiers.
 
 All subdomains (hub, spokes, dashboard) are served from a **single unified Next.js codebase** with a shared design system (Tailwind CSS + Radix UI via shadcn/ui patterns) and a unified data pipeline (Sanity CMS + Neon Postgres via Prisma ORM). There are no divergent code forks between subdomains — all differentiation is handled by middleware routing and data-driven content via Sanity schemas and role/access controls.
 
-**Locked Stack:** Next.js 15 (App Router) · pnpm · Sanity.io · Tailwind CSS + Radix UI · Neon Postgres + Prisma ORM · Auth.js v5 · Cloudflare Pages · Resend + Telegram Bot · GA4 + GSC + Cloudflare Analytics · Phase 2: Sentry + PostHog
+**Locked Stack:** Next.js 16 (App Router) · npm · Sanity.io · Tailwind CSS + Radix UI · Neon Postgres + Prisma ORM · Auth.js v5 · Cloudflare Pages · Resend + Telegram Bot · GA4 + GSC + Cloudflare Analytics · Phase 2: Sentry + PostHog
 
 ```mermaid
 ---
@@ -111,7 +111,7 @@ flowchart TD
     Root -->|"Middleware Routing"| S3["🌐 alatpetir.sentradaya.com\nLightning Protection\nSpoke"]
     Root -->|"Middleware Routing"| SN["🌐 baterai.sentradaya.com\nAdditional Spokes\n(extensible)"]
     Root -->|"Secure access"| SD["🔐 dashboard.sentradaya.com\nClient Tracking Services\n(B2B/B2G Login Portal)"]
-    subgraph SingleApp ["📦 Single Next.js 15 App"]
+    subgraph SingleApp ["📦 Single Next.js 16 App"]
         direction TB
         NextJS["App Router + Middleware\n(shared codebase)"]
         DesignSystem["Tailwind CSS + Radix UI\n(shadcn/ui patterns)"]

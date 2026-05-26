@@ -217,7 +217,7 @@ flowchart TD
 
 ### 4.1 Rasio Arsitektur Aplikasi Tunggal
 
-Keputusan teknologi kunci: **satu aplikasi Next.js 15** yang melayani semua domain (Hub, Spokes, Dashboard) melalui *middleware routing*.
+Keputusan teknologi kunci: **satu aplikasi Next.js 16** yang melayani semua domain (Hub, Spokes, Dashboard) melalui *middleware routing*.
 
 **Justifikasi Bisnis:**
 | Aspek | Pendekatan Aplikasi Tunggal | Pendekatan Multi-App | Keputusan |
@@ -274,7 +274,7 @@ Keputusan teknologi kunci: **satu aplikasi Next.js 15** yang melayani semua doma
 **Milestone Kritis:**
 | # | Milestone | Deliverable | Ownership |
 |---|-----------|-------------|-----------|
-| M1.1 | Monorepo Foundation | Next.js 15 scaffold, pnpm setup, shared design system | Pramono (Engineer) |
+| M1.1 | Monorepo Foundation | Next.js 16 scaffold, npm setup, shared design system | Pramono (Engineer) |
 | M1.2 | Domain Routing & Edge | Cloudflare Pages binding, middleware routing, redirect engine | Pramono (Engineer) |
 | M1.3 | CMS Contracts | Schemas Sanity: Product, Certification, Portfolio, SpokeConfig | Pramono (Engineer) |
 | M1.4 | Transactional Data Layer | Neon Postgres schema, Prisma ORM, migration validation | Pramono (Engineer) |
@@ -353,7 +353,7 @@ Semua layanan infrastruktur teknologi utama menggunakan Free Tier atau biaya IDR
 | Google Analytics 4 (Analytics) | IDR 0 (Free) |
 | Google Search Console (SEO Monitoring) | IDR 0 (Free) |
 | Cloudflare Analytics (Edge Insights) | IDR 0 (Free) |
-| Next.js 15 (Application Framework) | IDR 0 (Open Source) |
+| Next.js 16 (Application Framework) | IDR 0 (Open Source) |
 | Prisma ORM (Database Toolkit) | IDR 0 (Open Source) |
 | Tailwind CSS + Radix UI (UI System) | IDR 0 (Open Source) |
 | WhatsApp (wa.me Fallback) | IDR 0 (Free) |

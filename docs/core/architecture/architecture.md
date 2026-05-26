@@ -5,7 +5,7 @@
 ### Core Tech Stack Summary
 
 - **Application Runtime:** Next.js 16 (App Router, Route Handlers, Server Components, enhanced caching)
-- **Repository Strategy:** Single Next.js 16 app with pnpm package manager
+- **Repository Strategy:** Single Next.js 16 app with npm package manager
 - **Content Layer:** Sanity.io (headless CMS, schema-driven content federation)
 - **UI System:** Tailwind CSS + Radix UI with shadcn/ui patterns (shared tokenized design system)
 - **Transactional Data Layer:** Neon Postgres via Prisma ORM (type-safe migrations)

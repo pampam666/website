@@ -72,5 +72,5 @@ Arsitektur Informasi terbagi dalam 3 dokumen:
 
 *Dokumen ini adalah indeks utama. Baca setiap bagian secara berurutan untuk pemahaman lengkap.*
 
-**Catatan Arsitektur:** Satu aplikasi Next.js 15 dengan pnpm, menggunakan middleware untuk routing subdomain (Hub, Spokes, Dashboard), Prisma ORM dengan Neon Postgres, dan Auth.js v5.
+**Catatan Arsitektur:** Satu aplikasi Next.js 16 dengan npm, menggunakan middleware untuk routing subdomain (Hub, Spokes, Dashboard), Prisma ORM dengan Neon Postgres, dan Auth.js v5.
 
