@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 
@@ -42,8 +43,14 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">DB</span>
+              <div className="relative w-9 h-9 overflow-hidden rounded-xl bg-white shadow-sm flex items-center justify-center">
+                <Image
+                  src="/images/dbsn_logo.png"
+                  alt="Logo PT. DBSN"
+                  fill
+                  sizes="36px"
+                  className="object-contain"
+                />
               </div>
               <div>
                 <div className="font-bold text-white text-sm">DBSN Sentradaya</div>

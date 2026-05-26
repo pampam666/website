@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/shared/ThemeToggle";
@@ -47,8 +48,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center shadow-sm">
-              <span className="text-white font-bold text-sm">DB</span>
+            <div className="relative w-9 h-9 overflow-hidden rounded-xl bg-white shadow-sm flex items-center justify-center">
+              <Image
+                src="/images/dbsn_logo.png"
+                alt="Logo PT. DBSN"
+                fill
+                sizes="36px"
+                className="object-contain"
+              />
             </div>
             <div className="hidden sm:block">
               <div className="font-bold text-emerald-900 dark:text-emerald-100 text-sm leading-tight">DBSN Sentradaya</div>
