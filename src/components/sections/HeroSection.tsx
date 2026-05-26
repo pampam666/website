@@ -128,8 +128,14 @@ export default function HeroSection() {
               <div className="absolute inset-8 rounded-full bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm float-animation" style={{ animationDuration: "6s", animationDelay: "1s" }} />
               <div className="absolute inset-16 rounded-full bg-gradient-to-br from-emerald-400/20 to-white/10 backdrop-blur-sm flex items-center justify-center float-animation" style={{ animationDuration: "5s", animationDelay: "2s" }}>
                 <div className="text-center space-y-3 p-8">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto shadow-lg ring-4 ring-emerald-400/20">
-                    <Image src="/logo.png" alt="DBSN Sentradaya" width={80} height={80} className="w-full h-full object-cover" />
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden mx-auto shadow-lg ring-4 ring-emerald-400/20 bg-white flex items-center justify-center">
+                    <Image
+                      src="/images/dbsn_logo.png"
+                      alt="DBSN Sentradaya"
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-contain p-1"
+                    />
                   </div>
                   <div>
                     <p className="text-xl font-bold text-white drop-shadow-md">DBSN</p>
